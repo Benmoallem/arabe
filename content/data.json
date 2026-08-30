@@ -12,13 +12,15 @@
               "widget_kind": "text_item",
               "type": "text",
               "title": "الفاعل",
-              "content": "يكوت الفعل بعد الفعل مباشرة وهو مستد إليه دائما"
+              "content": "يكوت الفعل بعد الفعل مباشرة وهو مستد إليه دائما",
+              "hidden": false
             },
             {
               "widget_kind": "file_item",
               "type": "file",
               "title": "الانشاء",
-              "href": "/files/نصّ-مغامرة.pdf"
+              "href": "/files/نصّ-مغامرة.pdf",
+              "hidden": true
             }
           ]
         },
