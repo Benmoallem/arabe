@@ -30,9 +30,11 @@ collections:
                   - {label: "المعرّف (بدون مسافات، حروف إنجليزية)", name: "id", widget: string}
                   - {label: "اسم القسم الفرعي", name: "name", widget: string}
                   - label: "الدروس والملفات"
+
                     name: "items"
                     widget: list
                     summary: "{{title}}"
+                    typeKey: "widget_kind"
                     types:
                       - label: "نص مكتوب"
                         name: "text_item"
