@@ -358,7 +358,7 @@ let currentSection = null;
 let searchQuery = "";
 
 function levelItemCount(level){
-  return level.sections.reduce((sum,s)=> sum + s.items.length, 0);
+  return level.sections.reduce((sum,s)=> sum + s.items.filter(it=>!it.hidden).length, 0);
 }
 
 function renderSidebar(){
@@ -406,7 +406,7 @@ function renderCards(level){
   if(!section){ area.innerHTML = `<div class="empty">لا توجد أقسام فرعية بعد لهذا المستوى.</div>`; return; }
   const c = PALETTE[secIndex % PALETTE.length];
 
-  let items = section.items || [];
+  let items = (section.items || []).filter(it => !it.hidden);
   if(searchQuery.trim()){
     items = items.filter(it => it.title.toLowerCase().includes(searchQuery.toLowerCase()));
   }
