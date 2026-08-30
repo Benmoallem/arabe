@@ -43,6 +43,7 @@ collections:
                           - {label: "العنوان", name: "title", widget: string}
                           - {label: "النوع", name: "type", widget: hidden, default: "text"}
                           - {label: "المحتوى (النص الكامل)", name: "content", widget: text}
+                          - {label: "إخفاء مؤقت (دون حذف)", name: "hidden", widget: boolean, default: false}
                       - label: "ملف مرفق (PDF / Word)"
                         name: "file_item"
                         widget: object
@@ -50,4 +51,5 @@ collections:
                         fields:
                           - {label: "العنوان", name: "title", widget: string}
                           - {label: "النوع", name: "type", widget: hidden, default: "file"}
-                          - {label: "الملف", name: "href", widget: file, media_folder: "/files", choose_url: false}
+                          - {label: "الملف (ارفع مباشرة أو ألصق رابط جوجل درايف)", name: "href", widget: file, media_folder: "/files", choose_url: true}
+                          - {label: "إخفاء مؤقت (دون حذف)", name: "hidden", widget: boolean, default: false}
