@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>موقع العربيّة</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#241f18;
+    --paper:#faf6ee;
+    --paper-2:#f1ead9;
+    --board:#1f3d3a;
+    --board-2:#2a4f4a;
+    --gold:#d89b2c;
+    --line:#e2d8c1;
+    --shadow: 0 8px 24px rgba(31,61,58,0.10);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Tajawal',sans-serif;
+    min-height:100vh;
+  }
+  h1,h2,h3,.brand,.tab-label{font-family:'Cairo',sans-serif}
+
+  .topbar{
+    background:var(--board);
+    color:var(--paper);
+    padding:14px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    position:sticky; top:0; z-index:30;
+    box-shadow:var(--shadow);
+  }
+  .brand{font-weight:800; font-size:1.25rem; display:flex; align-items:center; gap:10px}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--gold)}
+  .search{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.18);
+    border-radius:10px;
+    padding:9px 14px;
+    color:var(--paper);
+    font-family:'Tajawal',sans-serif;
+    font-size:.92rem;
+    min-width:200px;
+    outline:none;
+  }
+  .search::placeholder{color:rgba(255,255,255,0.55)}
+
+  .layout{
+    display:flex;
+    align-items:flex-start;
+    max-width:1180px;
+    margin:0 auto;
+  }
+
+  .notebook{
+    position:sticky;
+    top:64px;
+    width:220px;
+    flex-shrink:0;
+    margin-top:22px;
+    padding-inline-start:14px;
+  }
+  .spine{
+    position:relative;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    border-radius:14px 4px 4px 14px;
+    padding:16px 0;
+  }
+  .spine::before{
+    content:"";
+    position:absolute;
+    inset-inline-end:6px;
+    top:14px; bottom:14px;
+    width:8px;
+    background-image: radial-gradient(circle, var(--paper) 3px, transparent 3.5px);
+    background-size: 8px 22px;
+    background-repeat: repeat-y;
+    opacity:.9;
+  }
+  .level-tab{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    width:100%;
+    border:none;
+    background:transparent;
+    text-align:right;
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:.95rem;
+    color:var(--ink);
+    padding:13px 16px 13px 8px;
+    cursor:pointer;
+    position:relative;
+    transition:.15s ease;
+  }
+  .level-tab:hover{background:rgba(216,155,44,0.10)}
+  .level-tab.active{
+    background:var(--paper);
+    border-inline-start:4px solid var(--gold);
+    padding-inline-start:12px;
+  }
+  .level-tab .count{
+    margin-inline-start:auto;
+    font-family:'Tajawal',sans-serif;
+    font-weight:500;
+    font-size:.75rem;
+    color:#8a8168;
+  }
+
+  .howto-btn{
+    display:block;
+    margin:14px 6px 0;
+    text-align:center;
+    font-size:.82rem;
+    color:var(--board);
+    text-decoration:none;
+    border:1px dashed var(--line);
+    border-radius:10px;
+    padding:9px;
+    background:var(--paper);
+    cursor:pointer;
+  }
+  .howto-btn:hover{border-color:var(--gold)}
+
+  main{
+    flex:1;
+    padding:26px 26px 60px 10px;
+    min-width:0;
+  }
+  .level-header{
+    display:flex;
+    align-items:baseline;
+    gap:12px;
+    margin-bottom:4px;
+  }
+  .level-header h1{
+    font-size:1.6rem;
+    margin:0;
+  }
+  .level-header .badge{
+    font-size:.78rem;
+    background:var(--paper-2);
+    border:1px solid var(--line);
+    padding:3px 10px;
+    border-radius:20px;
+    color:#6b6350;
+  }
+
+  .section-pills{
+    display:flex; gap:8px; margin:18px 0 22px; flex-wrap:wrap;
+  }
+  .pill{
+    font-family:'Cairo',sans-serif;
+    font-weight:700;
+    font-size:.85rem;
+    padding:8px 16px;
+    border-radius:9px;
+    border:1.5px solid var(--line);
+    background:var(--paper);
+    cursor:pointer;
+    color:var(--ink);
+  }
+  .pill.active{box-shadow:var(--shadow); color:#fff; border-color:transparent}
+
+  .cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fill, minmax(250px,1fr));
+    gap:16px;
+  }
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 16px 14px;
+    box-shadow:var(--shadow);
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    position:relative;
+    overflow:hidden;
+  }
+  .card::before{
+    content:"";
+    position:absolute; top:0; right:0; left:0; height:5px;
+  }
+  .card h3{margin:6px 0 0; font-size:1.02rem}
+  .card .type-tag{
+    font-size:.72rem; font-weight:700; font-family:'Cairo',sans-serif;
+    width:fit-content; padding:2px 9px; border-radius:20px;
+  }
+  .card p{margin:0; font-size:.87rem; color:#4c4736; line-height:1.6; flex:1}
+  .card .actions{display:flex; gap:8px; margin-top:6px}
+  .card a.open-file, .card button.open-text{
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    font-size:.82rem;
+    text-decoration:none;
+    background:var(--board);
+    color:var(--paper);
+    padding:7px 14px;
+    border-radius:8px;
+    border:none;
+    cursor:pointer;
+  }
+  .card a.open-file:hover, .card button.open-text:hover{background:var(--board-2)}
+  .empty{
+    color:#8a8168; font-size:.9rem; padding:30px 4px; text-align:center;
+    border:1px dashed var(--line); border-radius:12px; grid-column:1/-1;
+  }
+
+  .overlay{
+    position:fixed; inset:0; background:rgba(31,26,17,0.55);
+    display:none; align-items:center; justify-content:center; z-index:50; padding:20px;
+  }
+  .overlay.show{display:flex}
+  .modal{
+    background:var(--paper); border-radius:14px; max-width:640px; width:100%;
+    max-height:82vh; overflow:auto; padding:26px 28px; box-shadow:0 20px 50px rgba(0,0,0,.25);
+  }
+  .modal h2{margin-top:0; font-size:1.2rem}
+  .modal .content-text{white-space:pre-wrap; line-height:1.85; font-size:.95rem; color:#332f22}
+  .modal .close{
+    float:left; background:none; border:none; font-size:1.3rem; cursor:pointer; color:#8a8168;
+  }
+
+  #howtoModal .modal{max-width:680px}
+  #howtoModal h3{margin:18px 0 6px; font-size:1rem}
+  #howtoModal ol, #howtoModal ul{margin:6px 0; padding-inline-start:20px; font-size:.9rem; line-height:1.9}
+  #howtoModal code{
+    background:var(--paper-2); padding:2px 6px; border-radius:5px; font-size:.85em; direction:ltr; display:inline-block;
+  }
+
+  .site-footer{
+    text-align:center;
+    font-family:'Tajawal',sans-serif;
+    font-size:.82rem;
+    color:#8a8168;
+    padding:22px 16px 30px;
+    border-top:1px solid var(--line);
+    margin-top:20px;
+  }
+
+  @media (max-width:820px){
+    .layout{flex-direction:column}
+    .notebook{position:static; width:100%; margin-top:14px; padding-inline-start:0}
+    .spine{display:flex; overflow-x:auto; gap:2px; border-radius:12px; padding:10px}
+    .spine::before{display:none}
+    .level-tab{flex-direction:column; gap:4px; width:auto; white-space:nowrap; text-align:center; border-inline-start:none !important; padding:10px 14px}
+    .level-tab.active{border-bottom:4px solid var(--gold); padding-inline-start:14px}
+    .level-tab .count{margin-inline-start:0}
+    main{padding:20px 16px 60px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="dot"></span>موقع العربيّة</div>
+  <input class="search" id="searchBox" type="text" placeholder="ابحث عن عنوان...">
+</div>
+
+<div class="layout">
+  <nav class="notebook">
+    <div class="spine" id="levelList"></div>
+    <div class="howto-btn" id="howtoOpen">؟ كيف أضيف دروسي</div>
+  </nav>
+
+  <main>
+    <div class="level-header">
+      <h1 id="levelTitle"></h1>
+      <span class="badge" id="levelBadge"></span>
+    </div>
+
+    <div class="section-pills" id="sectionPills"></div>
+
+    <div class="cards" id="cardsArea"></div>
+  </main>
+</div>
+
+<footer class="site-footer">جميع الحقوق محفوظة للأستاذ محمد بن معلّم</footer>
+
+<div class="overlay" id="textOverlay">
+  <div class="modal">
+    <button class="close" id="closeText">×</button>
+    <h2 id="textTitle"></h2>
+    <div class="content-text" id="textBody"></div>
+  </div>
+</div>
+
+<div class="overlay" id="howtoModal">
+  <div class="modal">
+    <button class="close" id="closeHowto">×</button>
+    <h2>كيف أضيف دروسي إلى الموقع</h2>
+    <p style="font-size:.9rem">أصبح لموقعك <b>لوحة تحكم خاصة</b> على الرابط <code>/admin</code> (مثال: yoursite.netlify.app/admin). منها تضيف أو تحذف الدروس والملفات بالسحب والإفلات، دون فتح أي كود.</p>
+
+    <h3>هيكل الموقع</h3>
+    <p style="font-size:.9rem">كل <b>مستوى دراسي</b> (الأولى ثانوي، الثانية ثانوي...) يحتوي على <b>أقسام فرعية</b> خاصة به (نحو، بلاغة...)، وكل قسم فرعي يحتوي على عناصر (دروس نصية أو ملفات).</p>
+
+    <h3>الاستعمال</h3>
+    <ol>
+      <li>ادخل إلى <code>/admin</code> وسجّل دخولك</li>
+      <li>اختر "محتوى الموقع" ثم المستوى والقسم الفرعي المطلوب</li>
+      <li>لإضافة درس: اضغط "+" داخل قائمة الدروس، اختر "نص مكتوب" أو "ملف مرفق"، واملأ الحقول</li>
+      <li>لحذف درس: اضغط أيقونة الحذف بجانبه</li>
+      <li>اضغط "Publish" لنشر التغييرات مباشرة على الموقع</li>
+    </ol>
+  </div>
+</div>
+
+<script>
+let DATA = [];
+
+/* لوحة ألوان تُستعمل بالتناوب على الأقسام الفرعية داخل كل مستوى */
+const PALETTE = [
+  {accent:"#d89b2c", tagBg:"#fbe9c6", tagText:"#8a5c05"},
+  {accent:"#c9573b", tagBg:"#f7dcd3", tagText:"#8a3018"},
+  {accent:"#3b5ba9", tagBg:"#dbe2f3", tagText:"#20345f"},
+  {accent:"#2f8f6f", tagBg:"#d8f0e6", tagText:"#155c41"},
+  {accent:"#8a4fae", tagBg:"#ecdcf5", tagText:"#5a2d78"},
+  {accent:"#b8862f", tagBg:"#f3e6c8", tagText:"#6b4a10"},
+  {accent:"#3d7ea6", tagBg:"#d9edf5", tagText:"#1f4a63"},
+  {accent:"#a34b6f", tagBg:"#f3dbe5", tagText:"#6e2c47"}
+];
+
+/* ============================================================
+   الجزء البرمجي — لا حاجة لتعديله
+============================================================ */
+let currentLevel = null;
+let currentSection = null;
+let searchQuery = "";
+
+function levelItemCount(level){
+  return level.sections.reduce((sum,s)=> sum + s.items.length, 0);
+}
+
+function renderSidebar(){
+  const list = document.getElementById('levelList');
+  list.innerHTML = "";
+  DATA.forEach(lv=>{
+    const btn = document.createElement('button');
+    btn.className = 'level-tab' + (lv.id===currentLevel ? ' active' : '');
+    btn.innerHTML = `<span class="tab-label">${lv.name}</span>
+                      <span class="count">${levelItemCount(lv)}</span>`;
+    btn.onclick = ()=>{
+      currentLevel = lv.id;
+      currentSection = lv.sections[0] ? lv.sections[0].id : null;
+      searchQuery=""; document.getElementById('searchBox').value="";
+      render();
+    };
+    list.appendChild(btn);
+  });
+}
+
+function renderHeader(level){
+  document.getElementById('levelTitle').textContent = level.name;
+  document.getElementById('levelBadge').textContent = levelItemCount(level) + " عنصر";
+}
+
+function renderPills(level){
+  const wrap = document.getElementById('sectionPills');
+  wrap.innerHTML = "";
+  level.sections.forEach((sec, i)=>{
+    const c = PALETTE[i % PALETTE.length];
+    const btn = document.createElement('button');
+    btn.className = 'pill' + (sec.id===currentSection ? ' active' : '');
+    btn.textContent = sec.name;
+    if(sec.id===currentSection){ btn.style.background = c.accent; btn.style.borderColor = c.accent; }
+    btn.onclick = ()=>{ currentSection = sec.id; render(); };
+    wrap.appendChild(btn);
+  });
+}
+
+function renderCards(level){
+  const area = document.getElementById('cardsArea');
+  area.innerHTML = "";
+  const secIndex = level.sections.findIndex(s=>s.id===currentSection);
+  const section = level.sections[secIndex];
+  if(!section){ area.innerHTML = `<div class="empty">لا توجد أقسام فرعية بعد لهذا المستوى.</div>`; return; }
+  const c = PALETTE[secIndex % PALETTE.length];
+
+  let items = section.items || [];
+  if(searchQuery.trim()){
+    items = items.filter(it => it.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
+  if(items.length === 0){
+    area.innerHTML = `<div class="empty">لا يوجد محتوى بعد في «${section.name}».</div>`;
+    return;
+  }
+  items.forEach(it=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.style.setProperty('--card-accent', c.accent);
+    const actionHtml = it.type === 'file'
+      ? `<a class="open-file" href="${it.href}" target="_blank" rel="noopener">فتح الملف</a>`
+      : `<button class="open-text">قراءة المحتوى</button>`;
+    card.innerHTML = `
+      <span class="type-tag" style="background:${c.tagBg};color:${c.tagText}">${section.name}</span>
+      <h3>${it.title}</h3>
+      <p>${it.type === 'file' ? 'ملف مرفق (PDF/Word)' : (it.content.slice(0,70) + (it.content.length>70?'…':''))}</p>
+      <div class="actions">${actionHtml}</div>
+    `;
+    if(it.type === 'text'){
+      card.querySelector('.open-text').onclick = ()=>{
+        document.getElementById('textTitle').textContent = it.title;
+        document.getElementById('textBody').textContent = it.content;
+        document.getElementById('textOverlay').classList.add('show');
+      };
+    }
+    area.appendChild(card);
+    // شريط علوي ملوّن حسب لون القسم
+    card.style.position = 'relative';
+    const topBar = document.createElement('div');
+    topBar.style.cssText = `position:absolute;top:0;right:0;left:0;height:5px;background:${c.accent}`;
+    card.prepend(topBar);
+  });
+}
+
+function render(){
+  const level = DATA.find(l=>l.id===currentLevel);
+  renderSidebar();
+  renderHeader(level);
+  renderPills(level);
+  renderCards(level);
+}
+
+document.getElementById('searchBox').addEventListener('input', e=>{
+  searchQuery = e.target.value;
+  renderCards(DATA.find(l=>l.id===currentLevel));
+});
+
+document.getElementById('closeText').onclick = ()=> document.getElementById('textOverlay').classList.remove('show');
+document.getElementById('textOverlay').addEventListener('click', e=>{ if(e.target.id==='textOverlay') e.currentTarget.classList.remove('show'); });
+
+document.getElementById('howtoOpen').onclick = ()=> document.getElementById('howtoModal').classList.add('show');
+document.getElementById('closeHowto').onclick = ()=> document.getElementById('howtoModal').classList.remove('show');
+document.getElementById('howtoModal').addEventListener('click', e=>{ if(e.target.id==='howtoModal') e.currentTarget.classList.remove('show'); });
+
+fetch('content/data.json')
+  .then(r => r.json())
+  .then(data => {
+    DATA = data.levels || [];
+    if(DATA.length){
+      currentLevel = DATA[0].id;
+      currentSection = DATA[0].sections[0] ? DATA[0].sections[0].id : null;
+    }
+    render();
+  })
+  .catch(err => {
+    document.getElementById('cardsArea').innerHTML =
+      '<div class="empty">تعذّر تحميل المحتوى (content/data.json). تأكد أن الملف موجود بجانب index.html.</div>';
+    console.error(err);
+  });
+</script>
+</body>
+</html>

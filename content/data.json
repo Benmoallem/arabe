@@ -1,0 +1,43 @@
+{
+  "levels": [
+    {
+      "id": "y1", "name": "الأولى ثانوي",
+      "sections": [
+        { "id": "nahw", "name": "نحو", "items": [] },
+        { "id": "balagha", "name": "بلاغة", "items": [] },
+        { "id": "maqal", "name": "اختبار مقال", "items": [
+          { "title": "اختبار مقال: الفرض الأول", "type": "file", "href": "/files/y1/ikhtibar_maqal_1.pdf" }
+        ]},
+        { "id": "lugha_ikht", "name": "اختبار لغة", "items": [] },
+        { "id": "jamie", "name": "اختبار جامع", "items": [] }
+      ]
+    },
+    {
+      "id": "y2", "name": "الثانية ثانوي",
+      "sections": [
+        { "id": "lugha", "name": "لغة", "items": [] },
+        { "id": "muraqaba", "name": "اختبارات مراقبة", "items": [
+          { "title": "اختبار مراقبة: الثلاثي الأول", "type": "file", "href": "/files/y2/muraqaba_1.pdf" }
+        ]},
+        { "id": "talifiya", "name": "اختبارات تأليفية", "items": [] }
+      ]
+    },
+    {
+      "id": "y3", "name": "الثالثة ثانوي",
+      "sections": [
+        { "id": "lugha", "name": "لغة", "items": [] },
+        { "id": "muraqaba", "name": "اختبار مراقبة", "items": [] },
+        { "id": "talifiya", "name": "اختبارات تأليفية", "items": [] }
+      ]
+    },
+    {
+      "id": "y4", "name": "الرابعة علوم",
+      "sections": [
+        { "id": "lugha", "name": "لغة", "items": [] },
+        { "id": "khulasat", "name": "خلاصات", "items": [] },
+        { "id": "fiqarat", "name": "فقرات مختلفة", "items": [] },
+        { "id": "ikhtibarat", "name": "اختبارات", "items": [] }
+      ]
+    }
+  ]
+}

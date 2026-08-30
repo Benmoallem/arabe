@@ -1,0 +1,52 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "files"
+public_folder: "/files"
+
+locale: "ar"
+
+collections:
+  - name: "content"
+    label: "محتوى الموقع"
+    files:
+      - file: "content/data.json"
+        name: "site_data"
+        label: "المستويات والأقسام والدروس"
+        fields:
+          - label: "المستويات الدراسية"
+            name: "levels"
+            widget: list
+            summary: "{{fields.name}}"
+            fields:
+              - {label: "المعرّف (بدون مسافات، حروف إنجليزية)", name: "id", widget: string}
+              - {label: "اسم المستوى", name: "name", widget: string}
+              - label: "الأقسام الفرعية"
+                name: "sections"
+                widget: list
+                summary: "{{fields.name}}"
+                fields:
+                  - {label: "المعرّف (بدون مسافات، حروف إنجليزية)", name: "id", widget: string}
+                  - {label: "اسم القسم الفرعي", name: "name", widget: string}
+                  - label: "الدروس والملفات"
+                    name: "items"
+                    widget: list
+                    summary: "{{title}}"
+                    types:
+                      - label: "نص مكتوب"
+                        name: "text_item"
+                        widget: object
+                        summary: "{{title}}"
+                        fields:
+                          - {label: "العنوان", name: "title", widget: string}
+                          - {label: "النوع", name: "type", widget: hidden, default: "text"}
+                          - {label: "المحتوى (النص الكامل)", name: "content", widget: text}
+                      - label: "ملف مرفق (PDF / Word)"
+                        name: "file_item"
+                        widget: object
+                        summary: "{{title}}"
+                        fields:
+                          - {label: "العنوان", name: "title", widget: string}
+                          - {label: "النوع", name: "type", widget: hidden, default: "file"}
+                          - {label: "الملف", name: "href", widget: file, media_folder: "/files", choose_url: false}
