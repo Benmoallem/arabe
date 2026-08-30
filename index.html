@@ -52,6 +52,13 @@
     outline:none;
   }
   .search::placeholder{color:rgba(255,255,255,0.55)}
+  .admin-link{
+    font-family:'Tajawal',sans-serif; font-weight:700; font-size:.82rem;
+    color:var(--paper); background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.25); border-radius:8px;
+    padding:8px 14px; text-decoration:none; white-space:nowrap;
+  }
+  .admin-link:hover{background:rgba(255,255,255,0.2)}
 
   .layout{
     display:flex;
@@ -268,12 +275,14 @@
     main{padding:20px 16px 60px}
   }
 </style>
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
 
 <div class="topbar">
   <div class="brand"><span class="dot"></span>موقع العربيّة</div>
   <input class="search" id="searchBox" type="text" placeholder="ابحث عن عنوان...">
+  <a href="/admin/" id="adminLink" class="admin-link" style="display:none">لوحة التحكم</a>
 </div>
 
 <div class="layout">
@@ -511,6 +520,16 @@ fetch('content/data.json')
       '<div class="empty">تعذّر تحميل المحتوى (content/data.json). تأكد أن الملف موجود بجانب index.html.</div>';
     console.error(err);
   });
+
+/* إظهار رابط لوحة التحكم فقط لمن سجّل دخوله فعليًا (Netlify Identity) */
+if (window.netlifyIdentity) {
+  const adminLink = document.getElementById('adminLink');
+  const showIfLoggedIn = user => { adminLink.style.display = user ? 'inline-block' : 'none'; };
+  netlifyIdentity.on('init', showIfLoggedIn);
+  netlifyIdentity.on('login', showIfLoggedIn);
+  netlifyIdentity.on('logout', () => showIfLoggedIn(null));
+  netlifyIdentity.init();
+}
 </script>
 </body>
 </html>
