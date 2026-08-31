@@ -59,6 +59,29 @@
     padding:8px 14px; text-decoration:none; white-space:nowrap;
   }
   .admin-link:hover{background:rgba(255,255,255,0.2)}
+  .contact-btn{
+    font-family:'Tajawal',sans-serif; font-weight:700; font-size:.82rem;
+    color:var(--board); background:var(--gold);
+    border:none; border-radius:8px;
+    padding:9px 16px; cursor:pointer; white-space:nowrap;
+  }
+  .contact-btn:hover{background:var(--gold-2)}
+  .contact-modal{max-width:440px}
+  .contact-modal label{display:block; font-size:.85rem; font-weight:700; margin:14px 0 6px; color:#4c4736}
+  .contact-modal input, .contact-modal textarea{
+    width:100%; font-family:'Tajawal',sans-serif; font-size:.9rem;
+    border:1px solid var(--line); border-radius:8px; padding:9px 12px; background:var(--paper); color:var(--ink);
+  }
+  .contact-modal textarea{min-height:110px; resize:vertical}
+  .contact-modal .send-btn{
+    margin-top:16px; width:100%; font-family:'Cairo',sans-serif; font-weight:700; font-size:.9rem;
+    background:var(--board); color:var(--paper); border:none; border-radius:9px; padding:11px; cursor:pointer;
+  }
+  .contact-modal .send-btn:hover{background:var(--board-2)}
+  .contact-status{font-size:.85rem; margin-top:10px; display:none}
+  .contact-status.ok{color:#155c41}
+  .contact-status.err{color:#8a3018}
+  .hp-field{position:absolute; left:-9999px}
 
   .layout{
     display:flex;
@@ -282,6 +305,7 @@
 <div class="topbar">
   <div class="brand"><span class="dot"></span>موقع العربيّة</div>
   <input class="search" id="searchBox" type="text" placeholder="ابحث عن عنوان...">
+  <button id="contactOpen" class="contact-btn">تواصل معنا</button>
   <a href="/admin/" id="adminLink" class="admin-link" style="display:none">لوحة التحكم</a>
 </div>
 
@@ -321,6 +345,29 @@
     <div class="file-frame-wrap">
       <iframe id="fileFrame" class="file-frame" src="" title="عرض الملف"></iframe>
     </div>
+  </div>
+</div>
+
+<div class="overlay" id="contactOverlay">
+  <div class="modal contact-modal">
+    <button class="close" id="closeContact">×</button>
+    <h2>تواصل معنا</h2>
+    <form id="contactForm" name="contact" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="contact">
+      <p class="hp-field"><label>لا تملأ هذا الحقل: <input name="bot-field"></label></p>
+
+      <label for="cf-name">الاسم</label>
+      <input id="cf-name" name="name" type="text" required>
+
+      <label for="cf-email">البريد الإلكتروني (ضروري للرد عليك)</label>
+      <input id="cf-email" name="email" type="email" required>
+
+      <label for="cf-message">الرسالة</label>
+      <textarea id="cf-message" name="message" required></textarea>
+
+      <button type="submit" class="send-btn">إرسال</button>
+      <p class="contact-status" id="contactStatus"></p>
+    </form>
   </div>
 </div>
 
@@ -487,6 +534,38 @@ document.getElementById('fileOverlay').addEventListener('click', e=>{
     e.currentTarget.classList.remove('show');
     document.getElementById('fileFrame').src = '';
   }
+});
+
+document.getElementById('contactOpen').onclick = ()=> document.getElementById('contactOverlay').classList.add('show');
+document.getElementById('closeContact').onclick = ()=> document.getElementById('contactOverlay').classList.remove('show');
+document.getElementById('contactOverlay').addEventListener('click', e=>{ if(e.target.id==='contactOverlay') e.currentTarget.classList.remove('show'); });
+
+document.getElementById('contactForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const form = e.target;
+  const status = document.getElementById('contactStatus');
+  const btn = form.querySelector('.send-btn');
+  btn.disabled = true; btn.textContent = 'جارٍ الإرسال...';
+  fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(new FormData(form)).toString()
+  })
+  .then(()=>{
+    status.textContent = 'تم إرسال رسالتك بنجاح، شكرًا لك.';
+    status.className = 'contact-status ok';
+    status.style.display = 'block';
+    form.reset();
+    btn.textContent = 'إرسال';
+    btn.disabled = false;
+  })
+  .catch(()=>{
+    status.textContent = 'تعذّر الإرسال، حاول مرة أخرى.';
+    status.className = 'contact-status err';
+    status.style.display = 'block';
+    btn.textContent = 'إرسال';
+    btn.disabled = false;
+  });
 });
 
 /* تصعيب النسخ/الطباعة أثناء عرض ملف محلي داخل الموقع (ليست حماية مطلقة) */
