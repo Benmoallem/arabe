@@ -112,7 +112,15 @@
         {
           "id": "khulasat",
           "name": "خلاصات",
-          "items": []
+          "items": [
+            {
+              "widget_kind": "file_item",
+              "type": "file",
+              "hidden": false,
+              "title": "خلاصة محاور السّنة",
+              "href": "https://drive.google.com/file/d/1m8t5vxhac9thBwdBKe7JFrru8Me0OYWL/view?usp=sharing"
+            }
+          ]
         },
         {
           "id": "fiqarat",
