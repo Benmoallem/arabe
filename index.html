@@ -413,6 +413,16 @@ let currentLevel = null;
 let currentSection = null;
 let searchQuery = "";
 
+/* يحوّل رابط مشاركة Google Drive العادي إلى رابط معاينة قابل للتضمين داخل iframe، أو null إن لم يكن رابط Drive */
+function toDriveEmbedUrl(url){
+  if(!url) return null;
+  const m = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+  if(m) return `https://drive.google.com/file/d/${m[1]}/preview`;
+  const m2 = url.match(/[?&]id=([^&]+)/);
+  if(m2 && /drive\.google\.com/.test(url)) return `https://drive.google.com/file/d/${m2[1]}/preview`;
+  return null;
+}
+
 function levelItemCount(level){
   return level.sections.reduce((sum,s)=> sum + s.items.filter(it=>!it.hidden).length, 0);
 }
@@ -475,8 +485,10 @@ function renderCards(level){
     card.className = 'card';
     card.style.setProperty('--card-accent', c.accent);
     const isLocalFile = it.type === 'file' && !/^https?:\/\//i.test(it.href || '');
+    const driveEmbedSrc = it.type === 'file' ? toDriveEmbedUrl(it.href) : null;
+    const canEmbed = isLocalFile || !!driveEmbedSrc;
     const actionHtml = it.type === 'file'
-      ? (isLocalFile
+      ? (canEmbed
           ? `<button class="open-file">فتح الملف</button>`
           : `<a class="open-file" href="${it.href}" target="_blank" rel="noopener">فتح الملف</a>`)
       : `<button class="open-text">قراءة المحتوى</button>`;
@@ -493,10 +505,11 @@ function renderCards(level){
         document.getElementById('textOverlay').classList.add('show');
       };
     }
-    if(it.type === 'file' && isLocalFile){
+    if(it.type === 'file' && canEmbed){
       card.querySelector('.open-file').onclick = ()=>{
         document.getElementById('fileTitle').textContent = it.title;
-        document.getElementById('fileFrame').src = it.href + '#toolbar=0&navpanes=0';
+        const src = isLocalFile ? (it.href + '#toolbar=0&navpanes=0') : driveEmbedSrc;
+        document.getElementById('fileFrame').src = src;
         document.getElementById('fileOverlay').classList.add('show');
       };
     }
